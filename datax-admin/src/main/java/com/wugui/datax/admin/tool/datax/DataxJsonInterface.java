@@ -11,6 +11,7 @@ import java.util.Map;
  * @since 2020/03/14 12:24
  */
 public interface DataxJsonInterface {
+    Map<String, Object> buildCore();
 
     Map<String, Object> buildJob();
 

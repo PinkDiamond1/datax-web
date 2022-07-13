@@ -205,12 +205,38 @@ public class DataxJsonHelper implements DataxJsonInterface {
         }
     }
 
+    private Map<String, Object> buildChannel() {
+        Map<String, Object> res = Maps.newLinkedHashMap();
+        Map<String, Object> speedMap = Maps.newLinkedHashMap();
+        speedMap.put("byte", 10485760);
+        res.put("speed", speedMap);
+        return res;
+    }
+
+    private Map<String, Object> buildTransport() {
+        Map<String, Object> res = Maps.newLinkedHashMap();
+        Map<String, Object> channelMap = buildChannel();
+        res.put("channel", channelMap);
+        return res;
+    }
+
+    @Override
+    public Map<String, Object> buildCore() {
+        Map<String, Object> res = Maps.newLinkedHashMap();
+        Map<String, Object> transportMap = buildTransport();
+        res.put("transport", transportMap);
+        return res;
+    }
+
     @Override
     public Map<String, Object> buildJob() {
         Map<String, Object> res = Maps.newLinkedHashMap();
+        Map<String, Object> coreMap = buildCore();
+
         Map<String, Object> jobMap = Maps.newLinkedHashMap();
         jobMap.put("setting", buildSetting());
         jobMap.put("content", ImmutableList.of(buildContent()));
+        res.put("core", coreMap);
         res.put("job", jobMap);
         return res;
     }
@@ -285,7 +311,7 @@ public class DataxJsonHelper implements DataxJsonInterface {
         }
         dataxHbasePojo.setColumns(columns);
         dataxHbasePojo.setReaderHbaseConfig(readerDatasource.getZkAdress());
-        String readerTable=!CollectionUtils.isEmpty(readerTables)?readerTables.get(0):Constants.STRING_BLANK;
+        String readerTable = !CollectionUtils.isEmpty(readerTables) ? readerTables.get(0) : Constants.STRING_BLANK;
         dataxHbasePojo.setReaderTable(readerTable);
         dataxHbasePojo.setReaderMode(hbaseReaderDto.getReaderMode());
         dataxHbasePojo.setReaderRange(hbaseReaderDto.getReaderRange());
@@ -352,7 +378,7 @@ public class DataxJsonHelper implements DataxJsonInterface {
         }
         dataxHbasePojo.setColumns(columns);
         dataxHbasePojo.setWriterHbaseConfig(writerDatasource.getZkAdress());
-        String writerTable=!CollectionUtils.isEmpty(writerTables)?writerTables.get(0):Constants.STRING_BLANK;
+        String writerTable = !CollectionUtils.isEmpty(writerTables) ? writerTables.get(0) : Constants.STRING_BLANK;
         dataxHbasePojo.setWriterTable(writerTable);
         dataxHbasePojo.setWriterVersionColumn(hbaseWriterDto.getWriterVersionColumn());
         dataxHbasePojo.setWriterRowkeyColumn(hbaseWriterDto.getWriterRowkeyColumn());
