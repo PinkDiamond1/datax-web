@@ -292,6 +292,11 @@ public abstract class BaseQueryTool implements QueryToolInterface {
     @Override
     public List<String> getColumnNames(String tableName, String datasource) {
 
+        if (JdbcConstants.POSTGRESQL.equals(datasource) && !tableName.contains("\"")) {
+            String[] split = tableName.split("\\.");
+            split[1] = "\"" + split[1] + "\"";
+            tableName = StringUtils.join(split, '.');
+        }
         List<String> res = Lists.newArrayList();
         Statement stmt = null;
         ResultSet rs = null;
